@@ -1,0 +1,58 @@
+name: Render Polity Marathon Video
+
+on:
+  workflow_dispatch:
+    inputs:
+      chapter:
+        description: 'Chapter directory name to render'
+        required: true
+        default: 'chapter_01'
+  push:
+    branches:
+      - main
+    paths:
+      - 'chapters/**'
+      - 'scripts/**'
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Install Python Dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Render Full Marathon Video
+        run: |
+          python scripts/render_video.py --chapter "${{ github.event.inputs.chapter || 'chapter_01' }}"
+
+      - name: Upload Video Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: "${{ github.event.inputs.chapter || 'chapter_01' }}-Marathon-Video"
+          path: output/*.mp4
+          retention-days: 14
+
+      - name: Create Release with Video
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+        with:
+          tag_name: "release-${{ github.event.inputs.chapter || 'chapter_01' }}-${{ github.run_number }}"
+          name: "Full Marathon Video: ${{ github.event.inputs.chapter || 'chapter_01' }}"
+          files: output/*.mp4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
