@@ -21,8 +21,9 @@ def synthesize_f5tts(f5_model, dialogue, temp_dir, voices_dir):
     audio_segments = []
     
     # Load reference files
-    rohan_ref = os.path.join(voices_dir, "rohan_male_ref.wav")
-    rohan_txt = open(os.path.join(voices_dir, "rohan_male_ref.txt"), "r", encoding="utf-8").read().strip()
+    # Cloned from YouTube educator: https://youtu.be/IIR3FRCyO-s
+    rohan_ref = os.path.join(voices_dir, "pw_teacher_ref.wav")
+    rohan_txt = open(os.path.join(voices_dir, "pw_teacher_ref.txt"), "r", encoding="utf-8").read().strip()
     
     priya_ref = os.path.join(voices_dir, "priya_female_ref.wav")
     priya_txt = open(os.path.join(voices_dir, "priya_female_ref.txt"), "r", encoding="utf-8").read().strip()
