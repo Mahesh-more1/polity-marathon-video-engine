@@ -1,0 +1,15 @@
+{
+  "name": "Polity Marathon & VoiceStudio Workspace",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+  },
+  "forwardPorts": [3900],
+  "portsAttributes": {
+    "3900": {
+      "label": "VoiceStudio Web UI",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "postCreateCommand": "chmod +x start_voicestudio.sh && pip install -r requirements.txt"
+}
